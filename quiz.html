@@ -12,9 +12,9 @@
     }
     header {
       text-align: center;
-      background: #0d47a1;
+      background-color: #004080;
       color: white;
-      padding: 15px 0;
+      padding: 20px;
     }
     header h1 {
       font-family: "Arial Black", sans-serif;
@@ -22,76 +22,59 @@
       margin: 0;
     }
     nav {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      background: #1565c0;
-      padding: 10px 0;
-    }
-    nav a {
-      font-family: "Barlow", sans-serif;
-      font-size: 16pt;
-      text-decoration: none;
-      color: white;
-    }
-    nav a:hover {
-      text-decoration: underline;
-    }
-    main {
-      max-width: 800px;
-      margin: 20px auto;
-      padding: 20px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0px 2px 6px rgba(0,0,0,0.2);
-    }
-    h2 {
       text-align: center;
-      color: #0d47a1;
+      margin-top: 10px;
     }
-    label {
-      display: block;
-      margin: 10px 0 5px;
-    }
-    input, select {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 15px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    button {
-      background: #0d47a1;
-      color: white;
-      border: none;
-      padding: 12px 20px;
+    nav button {
+      font-family: "Barlow", sans-serif;
       font-size: 16px;
-      border-radius: 8px;
+      margin: 5px;
+      padding: 10px 20px;
+      border: none;
+      background-color: #0073e6;
+      color: white;
       cursor: pointer;
+      border-radius: 5px;
     }
-    button:hover {
-      background: #1565c0;
+    nav button:hover {
+      background-color: #005bb5;
     }
-    .progress {
-      width: 100%;
-      background: #e0e0e0;
+    .container {
+      width: 80%;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
       border-radius: 10px;
-      overflow: hidden;
-      margin: 15px 0;
+    }
+    .hidden {
+      display: none;
     }
     .progress-bar {
-      height: 20px;
-      width: 0%;
-      background: #0d47a1;
-      text-align: center;
-      color: white;
-      font-size: 12px;
+      width: 100%;
+      background-color: #ddd;
+      border-radius: 20px;
+      margin: 20px 0;
     }
-    footer {
-      text-align: center;
-      margin-top: 40px;
-      font-size: 14px;
-      color: #333;
+    .progress {
+      width: 0;
+      height: 20px;
+      background-color: #4CAF50;
+      border-radius: 20px;
+    }
+    .results {
+      margin-top: 20px;
+    }
+    button.action-btn {
+      margin: 5px;
+      padding: 10px 20px;
+      border: none;
+      background-color: #28a745;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button.action-btn:hover {
+      background-color: #1e7e34;
     }
   </style>
 </head>
@@ -101,78 +84,172 @@
   </header>
 
   <nav>
-    <a href="#">Home</a>
-    <a href="#">Quiz</a>
-    <a href="#">Help</a>
-    <a href="#">About</a>
+    <button onclick="showSection('home')">Home</button>
+    <button onclick="showSection('quiz')">Quiz</button>
+    <button onclick="showSection('help')">Help</button>
+    <button onclick="showSection('about')">About</button>
   </nav>
 
-  <main>
-    <h2>Mathematics Quiz</h2>
-    
-    <!-- User Details Section -->
-    <section id="user-details">
-      <label>Name:</label>
-      <input type="text" id="name">
-      <label>Grade:</label>
-      <input type="text" id="grade">
-      <label>Age:</label>
-      <input type="number" id="age">
-      <label>School:</label>
-      <input type="text" id="school">
-      <label>Number of Questions:</label>
-      <input type="number" id="numQuestions">
-      <label>Time (minutes):</label>
-      <input type="number" id="time">
-      <button onclick="nextSection()">Next</button>
-    </section>
+  <div class="container">
+    <!-- Home Section -->
+    <div id="home">
+      <h2>Welcome to JangAfrica Mathematics Quiz</h2>
+      <p>Select <b>Quiz</b> to get started!</p>
+    </div>
 
-    <!-- Quiz Topic Selection -->
-    <section id="topic-section" style="display:none;">
-      <label>Select Topic:</label>
-      <select id="topic">
-        <option value="">--Choose a topic--</option>
-        <!-- Topics will be loaded here -->
-      </select>
-      <button onclick="startQuiz()">Start</button>
-    </section>
+    <!-- Quiz Section -->
+    <div id="quiz" class="hidden">
+      <h2>Quiz Setup</h2>
+      <label>Name: <input type="text" id="name"></label><br><br>
+      <label>Grade: <input type="text" id="grade"></label><br><br>
+      <label>Age: <input type="number" id="age"></label><br><br>
+      <label>School: <input type="text" id="school"></label><br><br>
+      <label>Number of Questions: <input type="number" id="numQuestions"></label><br><br>
+      <label>Time (minutes): <input type="number" id="time"></label><br><br>
+      <button onclick="nextStep()">Next</button>
 
-    <!-- Quiz Progress -->
-    <section id="quiz-section" style="display:none;">
-      <div class="progress">
-        <div class="progress-bar" id="progress-bar">0%</div>
+      <div id="topicSelection" class="hidden">
+        <h3>Select Topic</h3>
+        <select id="topic">
+          <option>Algebra</option>
+          <option>Geometry</option>
+          <option>Fractions</option>
+          <option>Probability</option>
+          <option>Statistics</option>
+        </select><br><br>
+        <button onclick="startQuiz()">Start Quiz</button>
       </div>
-      <div id="quiz-content"></div>
-      <p>Correct: <span id="correct">0</span> | Wrong: <span id="wrong">0</span></p>
-    </section>
 
-    <!-- Results Section -->
-    <section id="results" style="display:none;">
-      <h2>Quiz Results</h2>
-      <p>Correct Answers: <span id="final-correct"></span></p>
-      <p>Wrong Answers: <span id="final-wrong"></span></p>
-      <button onclick="startAgain()">Start Again</button>
-      <button onclick="window.print()">Print</button>
-    </section>
-  </main>
+      <div id="quizContent" class="hidden">
+        <h3>Question <span id="qNumber">1</span></h3>
+        <p id="questionText">Sample question will appear here...</p>
+        <button onclick="submitAnswer(true)">Correct</button>
+        <button onclick="submitAnswer(false)">Wrong</button>
 
-  <footer>
-    <p><b>Help:</b> Tel: +(220) 594 4287 / 263 0798 | Email: info.jangafrica@gmail.com</p>
-    <p><b>About:</b> JangAfrica Learning Centre provides interactive educational programs designed to strengthen students’ knowledge and problem-solving skills. Our Mathematics quizzes help learners practice, test, and master concepts while building confidence for future learning.</p>
-  </footer>
+        <div class="progress-bar">
+          <div class="progress" id="progressBar"></div>
+        </div>
+      </div>
+
+      <div id="quizResults" class="hidden">
+        <h3>Quiz Completed!</h3>
+        <p>Correct Answers: <span id="correctCount"></span></p>
+        <p>Wrong Answers: <span id="wrongCount"></span></p>
+        <button class="action-btn" onclick="viewResults()">View</button>
+      </div>
+
+      <div id="viewSection" class="hidden">
+        <h3>Quiz Summary</h3>
+        <p>Name: <span id="summaryName"></span></p>
+        <p>Grade: <span id="summaryGrade"></span></p>
+        <p>Age: <span id="summaryAge"></span></p>
+        <p>School: <span id="summarySchool"></span></p>
+        <p>Topic: <span id="summaryTopic"></span></p>
+        <p>Correct: <span id="summaryCorrect"></span></p>
+        <p>Wrong: <span id="summaryWrong"></span></p>
+        <button class="action-btn" onclick="startNewQuiz()">Start New Quiz</button>
+        <button class="action-btn" onclick="tryAgain()">Try Again</button>
+        <button class="action-btn" onclick="window.print()">Print</button>
+      </div>
+    </div>
+
+    <!-- Help Section -->
+    <div id="help" class="hidden">
+      <h2>Help</h2>
+      <p>If you need assistance, contact us:</p>
+      <p>Tel: +(220) 594 4287 / 263 0798</p>
+      <p>Email: info.jangafrica@gmail.com</p>
+    </div>
+
+    <!-- About Section -->
+    <div id="about" class="hidden">
+      <h2>About JangAfrica Learning Centre</h2>
+      <p>
+        JangAfrica Learning Centre is an innovative educational program designed 
+        to support learners in mastering Mathematics and other subjects through 
+        interactive digital tools. The platform provides access to quizzes, 
+        practice activities, and progress tracking, helping students build 
+        confidence and achieve academic success. By combining technology with 
+        engaging learning methods, JangAfrica empowers students to reach their 
+        full potential.
+      </p>
+    </div>
+  </div>
 
   <script>
-    function nextSection() {
-      document.getElementById('user-details').style.display = 'none';
-      document.getElementById('topic-section').style.display = 'block';
+    let correct = 0, wrong = 0, total = 0, currentQ = 0;
+
+    function showSection(sectionId) {
+      document.querySelectorAll('.container > div').forEach(div => {
+        div.classList.add('hidden');
+      });
+      document.getElementById(sectionId).classList.remove('hidden');
     }
+
+    function nextStep() {
+      document.getElementById('topicSelection').classList.remove('hidden');
+    }
+
     function startQuiz() {
-      document.getElementById('topic-section').style.display = 'none';
-      document.getElementById('quiz-section').style.display = 'block';
+      correct = 0; wrong = 0; currentQ = 0;
+      total = parseInt(document.getElementById('numQuestions').value) || 5;
+      document.getElementById('topicSelection').classList.add('hidden');
+      document.getElementById('quizContent').classList.remove('hidden');
+      loadQuestion();
     }
-    function startAgain() {
-      document.getElementById('results').style.display = 'none';
-      document.getElementById('user-details').style.display = 'block';
+
+    function loadQuestion() {
+      if (currentQ < total) {
+        currentQ++;
+        document.getElementById('qNumber').textContent = currentQ;
+        document.getElementById('questionText').textContent =
+          "Sample Question " + currentQ + ": Solve this problem ...";
+        updateProgress();
+      } else {
+        finishQuiz();
+      }
+    }
+
+    function submitAnswer(isCorrect) {
+      if (isCorrect) correct++; else wrong++;
+      loadQuestion();
+    }
+
+    function updateProgress() {
+      let percent = (currentQ / total) * 100;
+      document.getElementById('progressBar').style.width = percent + "%";
+    }
+
+    function finishQuiz() {
+      document.getElementById('quizContent').classList.add('hidden');
+      document.getElementById('quizResults').classList.remove('hidden');
+      document.getElementById('correctCount').textContent = correct;
+      document.getElementById('wrongCount').textContent = wrong;
+    }
+
+    function viewResults() {
+      document.getElementById('quizResults').classList.add('hidden');
+      document.getElementById('viewSection').classList.remove('hidden');
+      document.getElementById('summaryName').textContent = document.getElementById('name').value;
+      document.getElementById('summaryGrade').textContent = document.getElementById('grade').value;
+      document.getElementById('summaryAge').textContent = document.getElementById('age').value;
+      document.getElementById('summarySchool').textContent = document.getElementById('school').value;
+      document.getElementById('summaryTopic').textContent = document.getElementById('topic').value;
+      document.getElementById('summaryCorrect').textContent = correct;
+      document.getElementById('summaryWrong').textContent = wrong;
+    }
+
+    function startNewQuiz() {
+      showSection('quiz');
+      document.getElementById('quizResults').classList.add('hidden');
+      document.getElementById('viewSection').classList.add('hidden');
+    }
+
+    function tryAgain() {
+      document.getElementById('viewSection').classList.add('hidden');
+      document.getElementById('quizContent').classList.remove('hidden');
+      correct = 0; wrong = 0; currentQ = 0;
+      loadQuestion();
     }
   </script>
 </body>
