@@ -2,241 +2,298 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>JangAfrica Learning Centre Quiz</title>
+  <title>JangAfrica Learning Centre</title>
   <style>
-    body { font-family: 'Barlow', sans-serif; background-color: lightblue; margin:0; padding:0; }
-    header { text-align:center; font-family:'Arial Black', sans-serif; font-size:36pt; margin:20px 0; }
-    nav { display:flex; justify-content:center; gap:30px; margin-bottom:20px; }
-    nav a { font-size:16pt; text-decoration:none; color:black; font-family:'Barlow', sans-serif; cursor:pointer; }
-    .container { width:80%; margin:auto; background:white; padding:20px; border-radius:12px;
-      box-shadow:0px 4px 10px rgba(0,0,0,0.2);}
-    .hidden { display:none; }
-    .progress-bar { width:100%; background:#ddd; border-radius:10px; margin:15px 0; }
-    .progress { height:20px; background:green; width:0%; border-radius:10px; text-align:center; color:white; }
-    button { padding:10px 20px; margin:10px 5px; background:darkblue; color:white; border:none;
-      border-radius:6px; cursor:pointer; }
-    button:hover { background:navy; }
-    input, select { margin:5px; padding:5px; }
-    textarea { width:100%; height:50px; margin:5px; }
+    body {
+      font-family: Arial, sans-serif;
+      background: lightblue;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      font-family: 'Arial Black';
+      font-size: 24px;
+      font-weight: bold;
+      color: black;
+      margin: 15px 0;
+    }
+    .container { padding: 20px; }
+    button {
+      background: green;
+      color: white;
+      padding: 10px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:hover { opacity: 0.8; }
+    #progressBar {
+      width: 80%;
+      background-color: #ddd;
+      margin: 20px auto;
+      border-radius: 5px;
+      height: 20px;
+      overflow: hidden;
+    }
+    #progress {
+      background-color: green;
+      height: 100%;
+      width: 0;
+      text-align: center;
+      color: white;
+    }
+    #quiz, #result { display: none; }
+    /* Printable Area */
+    @media print {
+      body { background: white; }
+      #printArea {
+        padding: 40px;
+        text-align: center;
+        width: 100%;
+      }
+      #printArea h1, #printArea h2, #printArea p {
+        margin: 8px 0;
+      }
+      .signature {
+        margin-top: 60px;
+        text-align: center;
+      }
+      button, #quiz, #result, #start { display: none !important; }
+    }
   </style>
 </head>
 <body>
 
-<header>JangAfrica Learning Centre</header>
-<nav>
-  <a onclick="showPage('home')">Home</a>
-  <a onclick="showPage('quiz')">Quiz</a>
-  <a onclick="showPage('help')">Help</a>
-  <a onclick="showPage('about')">About</a>
-  <a onclick="showPage('admin')">Admin</a>
-</nav>
+  <h1>JangAfrica Learning Centre</h1>
 
-<div class="container" id="home">
-  <h2>Welcome to JangAfrica Maths Quiz</h2>
-  <p>Click on <b>Quiz</b> to start your practice.</p>
-</div>
-
-<!-- QUIZ -->
-<div class="container hidden" id="quiz">
-  <div id="userDetails">
-    <h3>Enter Your Details</h3>
-    <label>Name: <input type="text" id="name"></label><br>
-    <label>Grade: <input type="text" id="grade"></label><br>
-    <label>Age: <input type="number" id="age"></label><br>
-    <label>School: <input type="text" id="school"></label><br>
-    <label>Number of Questions: <input type="number" id="numQ"></label><br>
-    <label>Time (mins): <input type="number" id="time"></label><br>
-    <button onclick="goNext()">Next</button>
-  </div>
-
-  <div id="topicSelect" class="hidden">
-    <h3>Select Topic</h3>
-    <select id="topic"></select><br>
+  <!-- Start Section -->
+  <div class="container" id="start">
+    <h2>Welcome to the Quiz</h2>
+    <label>Name: <input type="text" id="name"></label><br><br>
+    <label>Age: <input type="number" id="age"></label><br><br>
+    <label>Class Level (1–6): 
+      <select id="grade">
+        <option value="1">Year 1</option>
+        <option value="2">Year 2</option>
+        <option value="3">Year 3</option>
+        <option value="4">Year 4</option>
+        <option value="5">Year 5</option>
+        <option value="6">Year 6</option>
+      </select>
+    </label><br><br>
+    <label>Number of Questions: <input type="number" id="numQuestions" min="1" value="5"></label><br><br>
+    <label>Set Time (minutes): <input type="number" id="timeLimit" min="1" value="5"></label><br><br>
+    <label>Question Mode:
+      <select id="mode">
+        <option value="mcq">Multiple Choice</option>
+        <option value="subjective">Subjective</option>
+      </select>
+    </label><br><br>
     <button onclick="startQuiz()">Start Quiz</button>
   </div>
 
-  <div id="quizArea" class="hidden">
-    <h3 id="question"></h3>
+  <!-- Quiz Section -->
+  <div id="quiz">
+    <h2 id="question"></h2>
     <div id="options"></div>
-    <div class="progress-bar"><div id="progress" class="progress"></div></div>
+    <input type="text" id="answerBox" style="display:none;" placeholder="Type your answer">
+    <br>
+    <button onclick="submitAnswer()">Submit</button>
+    <div id="progressBar"><div id="progress"></div></div>
+    <p id="timer"></p>
   </div>
 
-  <div id="results" class="hidden">
-    <h3>Quiz Results</h3>
-    <p>Correct Answers: <span id="correct"></span></p>
-    <p>Wrong Answers: <span id="wrong"></span></p>
-    <button onclick="startAgain()">Start Again</button>
-    <button onclick="window.print()">Print</button>
+  <!-- Result Section -->
+  <div id="result">
+    <h2>Quiz Completed</h2>
+    <p id="summary"></p>
+    <button onclick="printResult()">Print Result</button>
+    <button onclick="restartQuiz()">Start New Quiz</button>
   </div>
-</div>
 
-<!-- HELP -->
-<div class="container hidden" id="help">
-  <h2>Help</h2>
-  <p>Contact us:</p>
-  <p>Tel: +(220) 594 4287 / 263 0798</p>
-  <p>Email: info.jangafrica@gmail.com</p>
-</div>
-
-<!-- ABOUT -->
-<div class="container hidden" id="about">
-  <h2>About</h2>
-  <p>
-    JangAfrica Learning Centre Quiz Program is designed to help students
-    strengthen their Mathematics knowledge through interactive practice.
-    It covers a wide range of topics, provides instant feedback, and
-    motivates learners to improve. By engaging with this platform,
-    students build confidence, accuracy, and problem-solving skills
-    essential for academic success.
-  </p>
-</div>
-
-<!-- ADMIN -->
-<div class="container hidden" id="admin">
-  <h2>Admin Panel – Add Questions</h2>
-  <label>Topic:
-    <select id="adminTopic">
-      <option>Addition and Subtraction</option>
-      <option>Multiplication</option>
-      <option>Types of Numbers</option>
-      <option>Sets</option>
-      <option>Factors and Multiples</option>
-      <option>Approximations</option>
-      <option>Decimals</option>
-      <option>Fractions</option>
-      <option>Integers</option>
-      <option>Linear Inequalities</option>
-      <option>Basic Algebra</option>
-      <option>Indices</option>
-      <option>Geometry</option>
-      <option>Angles</option>
-      <option>Ratio and Proportion</option>
-      <option>Time</option>
-      <option>Money</option>
-      <option>Interest</option>
-      <option>Trigonometry</option>
-      <option>Statistics</option>
-      <option>Probability</option>
-      <option>Logic and Reasoning</option>
-    </select>
-  </label><br>
-  <label>Question: <textarea id="adminQ"></textarea></label><br>
-  <label>Option A: <input id="optA"></label><br>
-  <label>Option B: <input id="optB"></label><br>
-  <label>Option C: <input id="optC"></label><br>
-  <label>Option D: <input id="optD"></label><br>
-  <label>Correct Answer (A/B/C/D): <input id="adminAns" maxlength="1"></label><br>
-  <button onclick="addQuestion()">Add Question</button>
-  <p id="saveMsg" style="color:green;"></p>
-</div>
+  <!-- Hidden printable section -->
+  <div id="printArea" style="display:none;">
+    <h1>JangAfrica Learning Centre</h1>
+    <h2>Quiz Result</h2>
+    <p id="printName"></p>
+    <p id="printAge"></p>
+    <p id="printGrade"></p>
+    <p id="printAttempted"></p>
+    <p id="printCorrect"></p>
+    <p id="printPercentage"></p>
+    <p id="printRemark"></p>
+    <p id="printDate"></p>
+    <div class="signature">
+      <p>__________________________</p>
+      <p>Admin/Director</p>
+    </div>
+  </div>
 
 <script>
-  // Page Navigation
-  function showPage(pageId) {
-    document.querySelectorAll('.container').forEach(div => div.classList.add('hidden'));
-    document.getElementById(pageId).classList.remove('hidden');
-    if(pageId === 'quiz') loadTopics();
-  }
+  // SAMPLE QUESTION BANK (to be expanded from your document)
+  const questionBank = {
+    1: [ // Year 1
+      {q: "What is 2 + 3?", a: "5"},
+      {q: "What comes after 19?", a: "20"},
+      {q: "Count in twos from 2 to 10", a: "2,4,6,8,10"}
+    ],
+    2: [ // Year 2
+      {q: "What is 12 - 4?", a: "8"},
+      {q: "Multiply: 3 × 6", a: "18"},
+      {q: "What is half of 14?", a: "7"}
+    ],
+    3: [ // Year 3
+      {q: "What is 45 ÷ 5?", a: "9"},
+      {q: "Round 67 to the nearest ten", a: "70"},
+      {q: "What is the perimeter of a square with side 5cm?", a: "20"}
+    ],
+    4: [ // Year 4
+      {q: "Find the area of a rectangle with length 6cm and width 4cm", a: "24"},
+      {q: "Simplify: 3/6", a: "1/2"},
+      {q: "What is 35% of 100?", a: "35"}
+    ],
+    5: [ // Year 5
+      {q: "Convert 0.75 to a fraction", a: "3/4"},
+      {q: "What is 12 × 12?", a: "144"},
+      {q: "The average of 10 and 20 is?", a: "15"}
+    ],
+    6: [ // Year 6
+      {q: "Solve: 2x + 5 = 15", a: "5"},
+      {q: "What is the square root of 49?", a: "7"},
+      {q: "Simplify: (2/3) + (1/6)", a: "5/6"}
+    ]
+  };
 
-  function goNext() {
-    document.getElementById('userDetails').classList.add('hidden');
-    document.getElementById('topicSelect').classList.remove('hidden');
-  }
+  let userName, userAge, userGrade, numQuestions, timeLimit, mode;
+  let currentQuestion = 0, correct = 0;
+  let timer, totalSeconds, questions = [];
 
-  // Store Questions in Local Storage
-  function addQuestion() {
-    let topic = document.getElementById('adminTopic').value;
-    let q = document.getElementById('adminQ').value;
-    let a = document.getElementById('optA').value;
-    let b = document.getElementById('optB').value;
-    let c = document.getElementById('optC').value;
-    let d = document.getElementById('optD').value;
-    let ans = document.getElementById('adminAns').value.toUpperCase();
+  function startQuiz() {
+    userName = document.getElementById('name').value;
+    userAge = document.getElementById('age').value;
+    userGrade = document.getElementById('grade').value;
+    numQuestions = parseInt(document.getElementById('numQuestions').value);
+    timeLimit = parseInt(document.getElementById('timeLimit').value) * 60;
+    mode = document.getElementById('mode').value;
 
-    if(!q || !a || !b || !c || !d || !["A","B","C","D"].includes(ans)) {
-      alert("Please fill all fields correctly.");
+    if (!userName || !userAge) {
+      alert("Please fill in all fields!");
       return;
     }
 
-    let newQ = {q:q, opts:[a,b,c,d], ans:ans};
-    let data = JSON.parse(localStorage.getItem("jangQuestions") || "{}");
-    if(!data[topic]) data[topic] = [];
-    data[topic].push(newQ);
-    localStorage.setItem("jangQuestions", JSON.stringify(data));
+    document.getElementById('start').style.display = "none";
+    document.getElementById('quiz').style.display = "block";
 
-    document.getElementById('saveMsg').innerText = "Question saved!";
-    setTimeout(()=> document.getElementById('saveMsg').innerText="", 2000);
-    document.getElementById('adminQ').value="";
-    document.getElementById('optA').value="";
-    document.getElementById('optB').value="";
-    document.getElementById('optC').value="";
-    document.getElementById('optD').value="";
-    document.getElementById('adminAns').value="";
+    generateQuestions();
+    showQuestion();
+    startTimer();
   }
 
-  // Quiz Logic
-  let currentQ=[], index=0, correct=0, wrong=0;
-
-  function loadTopics() {
-    let data = JSON.parse(localStorage.getItem("jangQuestions") || "{}");
-    let topicSelect = document.getElementById('topic');
-    topicSelect.innerHTML="";
-    Object.keys(data).forEach(t=>{
-      let opt=document.createElement('option');
-      opt.innerText=t;
-      topicSelect.appendChild(opt);
-    });
+  function generateQuestions() {
+    let bank = questionBank[userGrade];
+    questions = [];
+    for (let i = 0; i < numQuestions; i++) {
+      let q = bank[Math.floor(Math.random() * bank.length)];
+      questions.push(q);
+    }
   }
 
-  function startQuiz() {
-    let selectedTopic=document.getElementById('topic').value;
-    let data = JSON.parse(localStorage.getItem("jangQuestions") || "{}");
-    currentQ = data[selectedTopic] || [];
-    if(currentQ.length===0) { alert("No questions for this topic!"); return; }
-    document.getElementById('topicSelect').classList.add('hidden');
-    document.getElementById('quizArea').classList.remove('hidden');
-    index=0; correct=0; wrong=0;
-    loadQuestion();
+  function showQuestion() {
+    if (currentQuestion >= questions.length) { endQuiz(); return; }
+
+    let q = questions[currentQuestion];
+    document.getElementById("question").innerText = q.q;
+    document.getElementById("options").innerHTML = "";
+
+    if (mode === "mcq") {
+      document.getElementById("answerBox").style.display = "none";
+      // Generate 3 random wrong answers
+      let opts = [q.a];
+      while (opts.length < 4) {
+        let wrong = String(parseInt(q.a) + (Math.floor(Math.random()*5)-2));
+        if (wrong && !opts.includes(wrong) && wrong !== "NaN") opts.push(wrong);
+      }
+      opts.sort(() => Math.random() - 0.5);
+      opts.forEach(opt => {
+        let btn = document.createElement("button");
+        btn.innerText = opt;
+        btn.onclick = () => checkAnswer(opt);
+        document.getElementById("options").appendChild(btn);
+      });
+    } else {
+      document.getElementById("answerBox").style.display = "block";
+    }
+    document.getElementById("progress").style.width = ((currentQuestion / numQuestions) * 100) + "%";
   }
 
-  function loadQuestion() {
-    if(index>=currentQ.length) { endQuiz(); return; }
-    let q=currentQ[index];
-    document.getElementById('question').innerText=q.q;
-    let optsDiv=document.getElementById('options');
-    optsDiv.innerHTML="";
-    ["A","B","C","D"].forEach((letter,i)=>{
-      let btn=document.createElement('button');
-      btn.innerText=letter + ". " + q.opts[i];
-      btn.onclick=()=>checkAnswer(letter,q.ans);
-      optsDiv.appendChild(btn);
-    });
-    updateProgress();
+  function submitAnswer() {
+    if (mode === "subjective") {
+      let userAns = document.getElementById("answerBox").value.trim();
+      checkAnswer(userAns);
+      document.getElementById("answerBox").value = "";
+    }
   }
 
-  function checkAnswer(choice,ans) {
-    if(choice===ans) correct++; else wrong++;
-    index++; loadQuestion();
+  function checkAnswer(ans) {
+    let correctAns = questions[currentQuestion].a;
+    if (String(ans).toLowerCase() === String(correctAns).toLowerCase()) correct++;
+    currentQuestion++;
+    showQuestion();
   }
 
-  function updateProgress() {
-    let percent=Math.floor((index/currentQ.length)*100);
-    let progress=document.getElementById('progress');
-    progress.style.width=percent+"%";
-    progress.innerText=percent+"%";
+  function startTimer() {
+    totalSeconds = timeLimit;
+    timer = setInterval(() => {
+      totalSeconds--;
+      let m = Math.floor(totalSeconds / 60);
+      let s = totalSeconds % 60;
+      document.getElementById("timer").innerText = `Time Left: ${m}:${s < 10 ? '0'+s : s}`;
+      if (totalSeconds <= 0) {
+        clearInterval(timer);
+        endQuiz();
+      }
+    }, 1000);
   }
 
   function endQuiz() {
-    document.getElementById('quizArea').classList.add('hidden');
-    document.getElementById('results').classList.remove('hidden');
-    document.getElementById('correct').innerText=correct;
-    document.getElementById('wrong').innerText=wrong;
+    clearInterval(timer);
+    document.getElementById("quiz").style.display = "none";
+    document.getElementById("result").style.display = "block";
+
+    let percent = (correct / numQuestions) * 100;
+    let remark = percent >= 90 ? "Excellent" :
+                 percent >= 75 ? "Very Good" :
+                 percent >= 65 ? "Good" :
+                 percent >= 50 ? "Fair" : "Try Again";
+
+    document.getElementById("summary").innerText =
+      `Name: ${userName}\nAge: ${userAge}\nClass Level: Year ${userGrade}\nQuestions Attempted: ${numQuestions}\nCorrect: ${correct}\nPercentage: ${percent.toFixed(2)}%\nRemark: ${remark}`;
+
+    // Fill print area
+    document.getElementById("printName").innerText = `Name: ${userName}`;
+    document.getElementById("printAge").innerText = `Age: ${userAge}`;
+    document.getElementById("printGrade").innerText = `Class Level: Year ${userGrade}`;
+    document.getElementById("printAttempted").innerText = `Questions Attempted: ${numQuestions}`;
+    document.getElementById("printCorrect").innerText = `Correct: ${correct}`;
+    document.getElementById("printPercentage").innerText = `Percentage Score: ${percent.toFixed(2)}%`;
+    document.getElementById("printRemark").innerText = `Remark: ${remark}`;
+    document.getElementById("printDate").innerText = `Date & Time: ${new Date().toLocaleString()}`;
   }
 
-  function startAgain() {
-    document.getElementById('results').classList.add('hidden');
-    document.getElementById('userDetails').classList.remove('hidden');
+  function printResult() {
+    let printContents = document.getElementById("printArea").innerHTML;
+    let original = document.body.innerHTML;
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = original;
+    location.reload();
   }
+
+  function restartQuiz() { location.reload(); }
 </script>
+
 </body>
 </html>
