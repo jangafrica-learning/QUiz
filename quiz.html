@@ -5,295 +5,175 @@
   <title>JangAfrica Learning Centre</title>
   <style>
     body {
+      background-color: lightblue;
       font-family: Arial, sans-serif;
-      background: lightblue;
-      text-align: center;
       margin: 0;
       padding: 0;
     }
-    h1 {
-      font-family: 'Arial Black';
-      font-size: 24px;
-      font-weight: bold;
-      color: black;
-      margin: 15px 0;
-    }
-    .container { padding: 20px; }
-    button {
-      background: green;
+    header {
+      text-align: center;
+      background: #0d47a1;
       color: white;
-      padding: 10px 20px;
-      margin: 10px;
+      padding: 15px 0;
+    }
+    header h1 {
+      font-family: "Arial Black", sans-serif;
+      font-size: 36pt;
+      margin: 0;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      background: #1565c0;
+      padding: 10px 0;
+    }
+    nav a {
+      font-family: "Barlow", sans-serif;
+      font-size: 16pt;
+      text-decoration: none;
+      color: white;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    main {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0px 2px 6px rgba(0,0,0,0.2);
+    }
+    h2 {
+      text-align: center;
+      color: #0d47a1;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #0d47a1;
+      color: white;
       border: none;
+      padding: 12px 20px;
+      font-size: 16px;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 14px;
     }
-    button:hover { opacity: 0.8; }
-    #progressBar {
-      width: 80%;
-      background-color: #ddd;
-      margin: 20px auto;
-      border-radius: 5px;
-      height: 20px;
+    button:hover {
+      background: #1565c0;
+    }
+    .progress {
+      width: 100%;
+      background: #e0e0e0;
+      border-radius: 10px;
       overflow: hidden;
+      margin: 15px 0;
     }
-    #progress {
-      background-color: green;
-      height: 100%;
-      width: 0;
+    .progress-bar {
+      height: 20px;
+      width: 0%;
+      background: #0d47a1;
       text-align: center;
       color: white;
+      font-size: 12px;
     }
-    #quiz, #result { display: none; }
-    /* Printable Area */
-    @media print {
-      body { background: white; }
-      #printArea {
-        padding: 40px;
-        text-align: center;
-        width: 100%;
-      }
-      #printArea h1, #printArea h2, #printArea p {
-        margin: 8px 0;
-      }
-      .signature {
-        margin-top: 60px;
-        text-align: center;
-      }
-      button, #quiz, #result, #start { display: none !important; }
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 14px;
+      color: #333;
     }
   </style>
 </head>
 <body>
-
-  <h1>JangAfrica Learning Centre</h1>
-
-  <!-- Start Section -->
-  <div class="container" id="start">
-    <h2>Welcome to the Quiz</h2>
-    <label>Name: <input type="text" id="name"></label><br><br>
-    <label>Age: <input type="number" id="age"></label><br><br>
-    <label>Class Level (1–6): 
-      <select id="grade">
-        <option value="1">Year 1</option>
-        <option value="2">Year 2</option>
-        <option value="3">Year 3</option>
-        <option value="4">Year 4</option>
-        <option value="5">Year 5</option>
-        <option value="6">Year 6</option>
-      </select>
-    </label><br><br>
-    <label>Number of Questions: <input type="number" id="numQuestions" min="1" value="5"></label><br><br>
-    <label>Set Time (minutes): <input type="number" id="timeLimit" min="1" value="5"></label><br><br>
-    <label>Question Mode:
-      <select id="mode">
-        <option value="mcq">Multiple Choice</option>
-        <option value="subjective">Subjective</option>
-      </select>
-    </label><br><br>
-    <button onclick="startQuiz()">Start Quiz</button>
-  </div>
-
-  <!-- Quiz Section -->
-  <div id="quiz">
-    <h2 id="question"></h2>
-    <div id="options"></div>
-    <input type="text" id="answerBox" style="display:none;" placeholder="Type your answer">
-    <br>
-    <button onclick="submitAnswer()">Submit</button>
-    <div id="progressBar"><div id="progress"></div></div>
-    <p id="timer"></p>
-  </div>
-
-  <!-- Result Section -->
-  <div id="result">
-    <h2>Quiz Completed</h2>
-    <p id="summary"></p>
-    <button onclick="printResult()">Print Result</button>
-    <button onclick="restartQuiz()">Start New Quiz</button>
-  </div>
-
-  <!-- Hidden printable section -->
-  <div id="printArea" style="display:none;">
+  <header>
     <h1>JangAfrica Learning Centre</h1>
-    <h2>Quiz Result</h2>
-    <p id="printName"></p>
-    <p id="printAge"></p>
-    <p id="printGrade"></p>
-    <p id="printAttempted"></p>
-    <p id="printCorrect"></p>
-    <p id="printPercentage"></p>
-    <p id="printRemark"></p>
-    <p id="printDate"></p>
-    <div class="signature">
-      <p>__________________________</p>
-      <p>Admin/Director</p>
-    </div>
-  </div>
+  </header>
 
-<script>
-  // SAMPLE QUESTION BANK (to be expanded from your document)
-  const questionBank = {
-    1: [ // Year 1
-      {q: "What is 2 + 3?", a: "5"},
-      {q: "What comes after 19?", a: "20"},
-      {q: "Count in twos from 2 to 10", a: "2,4,6,8,10"}
-    ],
-    2: [ // Year 2
-      {q: "What is 12 - 4?", a: "8"},
-      {q: "Multiply: 3 × 6", a: "18"},
-      {q: "What is half of 14?", a: "7"}
-    ],
-    3: [ // Year 3
-      {q: "What is 45 ÷ 5?", a: "9"},
-      {q: "Round 67 to the nearest ten", a: "70"},
-      {q: "What is the perimeter of a square with side 5cm?", a: "20"}
-    ],
-    4: [ // Year 4
-      {q: "Find the area of a rectangle with length 6cm and width 4cm", a: "24"},
-      {q: "Simplify: 3/6", a: "1/2"},
-      {q: "What is 35% of 100?", a: "35"}
-    ],
-    5: [ // Year 5
-      {q: "Convert 0.75 to a fraction", a: "3/4"},
-      {q: "What is 12 × 12?", a: "144"},
-      {q: "The average of 10 and 20 is?", a: "15"}
-    ],
-    6: [ // Year 6
-      {q: "Solve: 2x + 5 = 15", a: "5"},
-      {q: "What is the square root of 49?", a: "7"},
-      {q: "Simplify: (2/3) + (1/6)", a: "5/6"}
-    ]
-  };
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">Quiz</a>
+    <a href="#">Help</a>
+    <a href="#">About</a>
+  </nav>
 
-  let userName, userAge, userGrade, numQuestions, timeLimit, mode;
-  let currentQuestion = 0, correct = 0;
-  let timer, totalSeconds, questions = [];
+  <main>
+    <h2>Mathematics Quiz</h2>
+    
+    <!-- User Details Section -->
+    <section id="user-details">
+      <label>Name:</label>
+      <input type="text" id="name">
+      <label>Grade:</label>
+      <input type="text" id="grade">
+      <label>Age:</label>
+      <input type="number" id="age">
+      <label>School:</label>
+      <input type="text" id="school">
+      <label>Number of Questions:</label>
+      <input type="number" id="numQuestions">
+      <label>Time (minutes):</label>
+      <input type="number" id="time">
+      <button onclick="nextSection()">Next</button>
+    </section>
 
-  function startQuiz() {
-    userName = document.getElementById('name').value;
-    userAge = document.getElementById('age').value;
-    userGrade = document.getElementById('grade').value;
-    numQuestions = parseInt(document.getElementById('numQuestions').value);
-    timeLimit = parseInt(document.getElementById('timeLimit').value) * 60;
-    mode = document.getElementById('mode').value;
+    <!-- Quiz Topic Selection -->
+    <section id="topic-section" style="display:none;">
+      <label>Select Topic:</label>
+      <select id="topic">
+        <option value="">--Choose a topic--</option>
+        <!-- Topics will be loaded here -->
+      </select>
+      <button onclick="startQuiz()">Start</button>
+    </section>
 
-    if (!userName || !userAge) {
-      alert("Please fill in all fields!");
-      return;
+    <!-- Quiz Progress -->
+    <section id="quiz-section" style="display:none;">
+      <div class="progress">
+        <div class="progress-bar" id="progress-bar">0%</div>
+      </div>
+      <div id="quiz-content"></div>
+      <p>Correct: <span id="correct">0</span> | Wrong: <span id="wrong">0</span></p>
+    </section>
+
+    <!-- Results Section -->
+    <section id="results" style="display:none;">
+      <h2>Quiz Results</h2>
+      <p>Correct Answers: <span id="final-correct"></span></p>
+      <p>Wrong Answers: <span id="final-wrong"></span></p>
+      <button onclick="startAgain()">Start Again</button>
+      <button onclick="window.print()">Print</button>
+    </section>
+  </main>
+
+  <footer>
+    <p><b>Help:</b> Tel: +(220) 594 4287 / 263 0798 | Email: info.jangafrica@gmail.com</p>
+    <p><b>About:</b> JangAfrica Learning Centre provides interactive educational programs designed to strengthen students’ knowledge and problem-solving skills. Our Mathematics quizzes help learners practice, test, and master concepts while building confidence for future learning.</p>
+  </footer>
+
+  <script>
+    function nextSection() {
+      document.getElementById('user-details').style.display = 'none';
+      document.getElementById('topic-section').style.display = 'block';
     }
-
-    document.getElementById('start').style.display = "none";
-    document.getElementById('quiz').style.display = "block";
-
-    generateQuestions();
-    showQuestion();
-    startTimer();
-  }
-
-  function generateQuestions() {
-    let bank = questionBank[userGrade];
-    questions = [];
-    for (let i = 0; i < numQuestions; i++) {
-      let q = bank[Math.floor(Math.random() * bank.length)];
-      questions.push(q);
+    function startQuiz() {
+      document.getElementById('topic-section').style.display = 'none';
+      document.getElementById('quiz-section').style.display = 'block';
     }
-  }
-
-  function showQuestion() {
-    if (currentQuestion >= questions.length) { endQuiz(); return; }
-
-    let q = questions[currentQuestion];
-    document.getElementById("question").innerText = q.q;
-    document.getElementById("options").innerHTML = "";
-
-    if (mode === "mcq") {
-      document.getElementById("answerBox").style.display = "none";
-      // Generate 3 random wrong answers
-      let opts = [q.a];
-      while (opts.length < 4) {
-        let wrong = String(parseInt(q.a) + (Math.floor(Math.random()*5)-2));
-        if (wrong && !opts.includes(wrong) && wrong !== "NaN") opts.push(wrong);
-      }
-      opts.sort(() => Math.random() - 0.5);
-      opts.forEach(opt => {
-        let btn = document.createElement("button");
-        btn.innerText = opt;
-        btn.onclick = () => checkAnswer(opt);
-        document.getElementById("options").appendChild(btn);
-      });
-    } else {
-      document.getElementById("answerBox").style.display = "block";
+    function startAgain() {
+      document.getElementById('results').style.display = 'none';
+      document.getElementById('user-details').style.display = 'block';
     }
-    document.getElementById("progress").style.width = ((currentQuestion / numQuestions) * 100) + "%";
-  }
-
-  function submitAnswer() {
-    if (mode === "subjective") {
-      let userAns = document.getElementById("answerBox").value.trim();
-      checkAnswer(userAns);
-      document.getElementById("answerBox").value = "";
-    }
-  }
-
-  function checkAnswer(ans) {
-    let correctAns = questions[currentQuestion].a;
-    if (String(ans).toLowerCase() === String(correctAns).toLowerCase()) correct++;
-    currentQuestion++;
-    showQuestion();
-  }
-
-  function startTimer() {
-    totalSeconds = timeLimit;
-    timer = setInterval(() => {
-      totalSeconds--;
-      let m = Math.floor(totalSeconds / 60);
-      let s = totalSeconds % 60;
-      document.getElementById("timer").innerText = `Time Left: ${m}:${s < 10 ? '0'+s : s}`;
-      if (totalSeconds <= 0) {
-        clearInterval(timer);
-        endQuiz();
-      }
-    }, 1000);
-  }
-
-  function endQuiz() {
-    clearInterval(timer);
-    document.getElementById("quiz").style.display = "none";
-    document.getElementById("result").style.display = "block";
-
-    let percent = (correct / numQuestions) * 100;
-    let remark = percent >= 90 ? "Excellent" :
-                 percent >= 75 ? "Very Good" :
-                 percent >= 65 ? "Good" :
-                 percent >= 50 ? "Fair" : "Try Again";
-
-    document.getElementById("summary").innerText =
-      `Name: ${userName}\nAge: ${userAge}\nClass Level: Year ${userGrade}\nQuestions Attempted: ${numQuestions}\nCorrect: ${correct}\nPercentage: ${percent.toFixed(2)}%\nRemark: ${remark}`;
-
-    // Fill print area
-    document.getElementById("printName").innerText = `Name: ${userName}`;
-    document.getElementById("printAge").innerText = `Age: ${userAge}`;
-    document.getElementById("printGrade").innerText = `Class Level: Year ${userGrade}`;
-    document.getElementById("printAttempted").innerText = `Questions Attempted: ${numQuestions}`;
-    document.getElementById("printCorrect").innerText = `Correct: ${correct}`;
-    document.getElementById("printPercentage").innerText = `Percentage Score: ${percent.toFixed(2)}%`;
-    document.getElementById("printRemark").innerText = `Remark: ${remark}`;
-    document.getElementById("printDate").innerText = `Date & Time: ${new Date().toLocaleString()}`;
-  }
-
-  function printResult() {
-    let printContents = document.getElementById("printArea").innerHTML;
-    let original = document.body.innerHTML;
-    document.body.innerHTML = printContents;
-    window.print();
-    document.body.innerHTML = original;
-    location.reload();
-  }
-
-  function restartQuiz() { location.reload(); }
-</script>
-
+  </script>
 </body>
 </html>
